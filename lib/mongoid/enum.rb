@@ -12,6 +12,7 @@ module Mongoid
         options = default_options(values).merge(options)
 
         set_values_constant name, values
+        set_values_class_method name
 
         create_field field_name, options
 
@@ -33,6 +34,12 @@ module Mongoid
       def set_values_constant(name, values)
         const_name = name.to_s.upcase
         const_set const_name, values
+      end
+
+      def set_values_class_method(name)
+        define_singleton_method name.to_s.pluralize do
+          const_get name.to_s.upcase
+        end
       end
 
       def create_field(field_name, options)
